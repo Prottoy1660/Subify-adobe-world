@@ -10,10 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, LogIn, Loader2 } from 'lucide-react'; 
+import { AlertCircle, LogIn, Loader2, Mail, Lock } from 'lucide-react'; 
 import { handleLogin } from '@/app/actions';
 import { REGISTER_PATH } from '@/lib/constants'; 
-import { useToast } from '@/hooks/use-toast'; 
+import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 
 const LoginSchema = z.object({
   identifier: z.string().min(1, { message: 'Email or phone is required.' }),
@@ -30,7 +31,11 @@ const initialState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" className="w-full transition-transform hover:scale-[1.02] active:scale-[0.98]" disabled={pending}>
+    <Button 
+      type="submit" 
+      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" 
+      disabled={pending}
+    >
       {pending ? (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       ) : (
@@ -70,7 +75,6 @@ export function LoginForm() {
     const formData = new FormData(e.currentTarget);
     formData.append('userAgent', navigator.userAgent);
     
-    // Get IP address using a third-party service
     try {
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
@@ -87,49 +91,103 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
-        <Label htmlFor="identifier">Email or Phone</Label>
-        <Input
-          id="identifier"
-          type="text"
-          placeholder="Enter your email or phone number"
-          required
-          {...form.register('identifier')}
-        />
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Label htmlFor="identifier" className="text-sm font-medium">Email or Phone</Label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="identifier"
+            type="text"
+            placeholder="Enter your email or phone number"
+            required
+            className="pl-10 bg-background/50 border-primary/10 focus:border-primary/30 transition-colors"
+            {...form.register('identifier')}
+          />
+        </div>
         {form.formState.errors.identifier && (
-          <p className="text-sm text-destructive">{form.formState.errors.identifier.message}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {form.formState.errors.identifier.message}
+          </motion.p>
         )}
         {state?.errors?.identifier && (
-          <p className="text-sm text-destructive">{state.errors.identifier[0]}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {state.errors.identifier[0]}
+          </motion.p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          required
-          {...form.register('password')}
-        />
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="password"
+            type="password"
+            required
+            className="pl-10 bg-background/50 border-primary/10 focus:border-primary/30 transition-colors"
+            {...form.register('password')}
+          />
+        </div>
         {form.formState.errors.password && (
-          <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {form.formState.errors.password.message}
+          </motion.p>
         )}
-         {state?.errors?.password && (
-          <p className="text-sm text-destructive">{state.errors.password[0]}</p>
+        {state?.errors?.password && (
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {state.errors.password[0]}
+          </motion.p>
         )}
-      </div>
+      </motion.div>
       
-      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 delay-300">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
         <SubmitButton />
-      </div>
+      </motion.div>
 
-      <p className="text-center text-sm text-muted-foreground animate-in fade-in duration-300 delay-400">
+      <motion.p 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="text-center text-sm text-muted-foreground"
+      >
         Don&apos;t have an account?{' '}
-        <Link href={REGISTER_PATH} className="font-medium text-primary hover:underline">
+        <Link 
+          href={REGISTER_PATH} 
+          className="font-medium text-primary hover:text-primary/80 transition-colors"
+        >
           Register
         </Link>
-      </p>
+      </motion.p>
     </form>
   );
 }

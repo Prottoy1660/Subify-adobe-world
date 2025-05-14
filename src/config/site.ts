@@ -1,5 +1,6 @@
 import type { LucideProps } from 'lucide-react'; 
 import { ADMIN_DASHBOARD_PATH, RESELLER_DASHBOARD_PATH, RESELLER_SUBMIT_PATH, APP_NAME } from '@/lib/constants';
+import { LayoutDashboard, Users, UserPlus, FileSpreadsheet, AlertTriangle, History, Settings } from 'lucide-react';
 
 export interface NavItem {
   title: string;
@@ -30,13 +31,8 @@ export const resellerNavItems: NavItem[] = [
 export const adminNavItems: NavItem[] = [
   {
     title: 'Dashboard',
-    href: ADMIN_DASHBOARD_PATH,
+    href: '/admin/dashboard',
     icon: 'LayoutDashboard',
-  },
-  {
-    title: 'Add Customer',
-    href: '/admin/add-customer',
-    icon: 'UserPlus',
   },
   {
     title: 'Resellers',
@@ -44,9 +40,29 @@ export const adminNavItems: NavItem[] = [
     icon: 'Users',
   },
   {
+    title: 'Add Customer',
+    href: '/admin/add-customer',
+    icon: 'UserPlus',
+  },
+  {
+    title: 'Expired Accounts',
+    href: '/admin/expired-accounts',
+    icon: 'AlertTriangle',
+  },
+  {
+    title: 'Financial Management',
+    href: '/admin/financial',
+    icon: 'Wallet',
+  },
+  {
     title: 'Login History',
     href: '/admin/login-history',
     icon: 'History',
+  },
+  {
+    title: 'Profile',
+    href: '/admin/profile',
+    icon: 'User',
   },
   {
     title: 'Settings',

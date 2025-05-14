@@ -10,10 +10,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, UserPlus, Loader2 } from 'lucide-react'; 
+import { AlertCircle, UserPlus, Loader2, User, Mail, Phone, Lock } from 'lucide-react'; 
 import { handleRegister } from '@/app/actions';
 import { LOGIN_PATH } from '@/lib/constants'; 
-import { useToast } from '@/hooks/use-toast'; 
+import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
 
 const RegisterSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -32,12 +33,16 @@ const initialState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" className="w-full transition-transform hover:scale-[1.02] active:scale-[0.98]" disabled={pending}>
-       {pending ? (
+    <Button 
+      type="submit" 
+      className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground transition-all duration-300 hover:shadow-lg hover:shadow-primary/20" 
+      disabled={pending}
+    >
+      {pending ? (
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
       ) : (
         <>
-         <UserPlus className="mr-2 h-4 w-4" /> Register
+          <UserPlus className="mr-2 h-4 w-4" /> Register
         </>
       )}
     </Button>
@@ -70,85 +75,177 @@ export function RegisterForm() {
 
   return (
     <form action={formAction} className="space-y-6">
-      <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-100">
-        <Label htmlFor="name">Full Name</Label>
-        <Input
-          id="name"
-          name="name"
-          required
-          {...form.register('name')}
-        />
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Label htmlFor="name" className="text-sm font-medium">Full Name</Label>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="name"
+            required
+            className="pl-10 bg-background/50 border-primary/10 focus:border-primary/30 transition-colors"
+            {...form.register('name')}
+          />
+        </div>
         {form.formState.errors.name && (
-          <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {form.formState.errors.name.message}
+          </motion.p>
         )}
         {state?.errors?.name && (
-          <p className="text-sm text-destructive">{state.errors.name[0]}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {state.errors.name[0]}
+          </motion.p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="login@subifybd.com"
-          required
-          {...form.register('email')}
-        />
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+      >
+        <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="login@subifybd.com"
+            required
+            className="pl-10 bg-background/50 border-primary/10 focus:border-primary/30 transition-colors"
+            {...form.register('email')}
+          />
+        </div>
         {form.formState.errors.email && (
-          <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {form.formState.errors.email.message}
+          </motion.p>
         )}
         {state?.errors?.email && (
-          <p className="text-sm text-destructive">{state.errors.email[0]}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {state.errors.email[0]}
+          </motion.p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200">
-        <Label htmlFor="phone">Phone Number</Label>
-        <Input
-          id="phone"
-          name="phone"
-          type="tel"
-          placeholder="e.g. 017XXXXXXXX"
-          required
-          {...form.register('phone')}
-        />
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+      >
+        <Label htmlFor="phone" className="text-sm font-medium">Phone Number</Label>
+        <div className="relative">
+          <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="phone"
+            type="tel"
+            placeholder="e.g. 017XXXXXXXX"
+            required
+            className="pl-10 bg-background/50 border-primary/10 focus:border-primary/30 transition-colors"
+            {...form.register('phone')}
+          />
+        </div>
         {form.formState.errors.phone && (
-          <p className="text-sm text-destructive">{form.formState.errors.phone.message}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {form.formState.errors.phone.message}
+          </motion.p>
         )}
         {state?.errors?.phone && (
-          <p className="text-sm text-destructive">{state.errors.phone[0]}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {state.errors.phone[0]}
+          </motion.p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-300">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          required
-          {...form.register('password')}
-        />
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+        <div className="relative">
+          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            id="password"
+            type="password"
+            required
+            className="pl-10 bg-background/50 border-primary/10 focus:border-primary/30 transition-colors"
+            {...form.register('password')}
+          />
+        </div>
         {form.formState.errors.password && (
-          <p className="text-sm text-destructive">{form.formState.errors.password.message}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {form.formState.errors.password.message}
+          </motion.p>
         )}
         {state?.errors?.password && (
-          <p className="text-sm text-destructive">{state.errors.password[0]}</p>
+          <motion.p 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm text-destructive"
+          >
+            {state.errors.password[0]}
+          </motion.p>
         )}
-      </div>
+      </motion.div>
       
-      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 delay-400">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
+      >
         <SubmitButton />
-      </div>
+      </motion.div>
 
-      <p className="text-center text-sm text-muted-foreground animate-in fade-in duration-300 delay-400">
+      <motion.p 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+        className="text-center text-sm text-muted-foreground"
+      >
         Already have an account?{' '}
-        <Link href={LOGIN_PATH} className="font-medium text-primary hover:underline">
+        <Link 
+          href={LOGIN_PATH} 
+          className="font-medium text-primary hover:text-primary/80 transition-colors"
+        >
           Login
         </Link>
-      </p>
+      </motion.p>
     </form>
   );
 }

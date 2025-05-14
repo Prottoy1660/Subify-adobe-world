@@ -8,6 +8,7 @@ export interface User {
   email: string;
   phone: string;
   name?: string;
+  image?: string; // Optional profile image URL
   role: UserRole;
   password?: string;
   banned?: boolean;

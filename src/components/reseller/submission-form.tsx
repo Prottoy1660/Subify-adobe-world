@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useActionState } from 'react';
@@ -17,6 +16,7 @@ import type { Plan } from '@/types';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { FilePlus, Loader2 } from 'lucide-react';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 
 const NewSubmissionSchema = z.object({
   customerEmail: z.string().email({ message: 'Valid customer email is required.' }),
@@ -101,13 +101,18 @@ export function SubmissionForm({ plans }: SubmissionFormProps) {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-150">
             <div className="space-y-2">
-              <Label htmlFor="customerEmail">Customer Email</Label>
-              <Input
-                id="customerEmail"
+              <FormField
+                control={form.control}
                 name="customerEmail"
-                type="email"
-                placeholder="customer@example.com"
-                {...form.register('customerEmail')}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Customer Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
               {form.formState.errors.customerEmail && (
                 <p className="text-sm text-destructive">{form.formState.errors.customerEmail.message}</p>
@@ -154,13 +159,18 @@ export function SubmissionForm({ plans }: SubmissionFormProps) {
           </div>
           
           <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-200">
-            <Label htmlFor="durationMonths">Duration (Months)</Label>
-            <Input
-              id="durationMonths"
+            <FormField
+              control={form.control}
               name="durationMonths"
-              type="number"
-              placeholder="e.g., 12"
-              {...form.register('durationMonths')}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Duration (Months)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
             {form.formState.errors.durationMonths && (
               <p className="text-sm text-destructive">{form.formState.errors.durationMonths.message}</p>
@@ -171,13 +181,18 @@ export function SubmissionForm({ plans }: SubmissionFormProps) {
           </div>
 
           <div className="space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300 delay-250">
-            <Label htmlFor="notes">Notes (Optional for AI prediction)</Label>
-            <Textarea
-              id="notes"
+            <FormField
+              control={form.control}
               name="notes"
-              placeholder="Any additional notes for the admin or for renewal prediction..."
-              {...form.register('notes')}
-              rows={3}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
              {state?.errors?.notes && (
                 <p className="text-sm text-destructive">{state.errors.notes[0]}</p>

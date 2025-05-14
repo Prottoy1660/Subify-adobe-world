@@ -54,7 +54,11 @@ export async function addSubmission(
   return mapMongoDocument<Submission>(insertedDoc);
 }
 
-export async function updateSubmissionStatus(id: string, status: SubmissionStatus): Promise<Submission | null> {
+export async function updateSubmissionStatus(
+  id: string,
+  status: SubmissionStatus,
+  durationMonths?: number
+): Promise<Submission | null> {
   const submissionsCollection = await getSubmissionsCollection();
   const now = formatISO(new Date());
 
@@ -76,12 +80,16 @@ export async function updateSubmissionStatus(id: string, status: SubmissionStatu
     updatedAt: now,
   };
 
-  if (status === 'Successful' && !submissionToUpdate.startDate) {
-    const startDate = new Date();
-    updateData.startDate = formatISO(startDate);
+  if (status === 'Successful') {
+    const startDate = submissionToUpdate.startDate ? new Date(submissionToUpdate.startDate) : new Date();
     const endDate = new Date(startDate);
-    endDate.setMonth(startDate.getMonth() + submissionToUpdate.durationMonths);
+    endDate.setMonth(endDate.getMonth() + (durationMonths || submissionToUpdate.durationMonths || 1));
+
+    updateData.startDate = formatISO(startDate);
     updateData.endDate = formatISO(endDate);
+    if (durationMonths) {
+      updateData.durationMonths = durationMonths;
+    }
   }
 
   try {
@@ -437,14 +445,16 @@ export async function updatePaymentRequest(
 
 export async function createSuccessfulSubmission(
   resellerId: string,
-  customerEmail: string
+  customerEmail: string,
+  durationMonths: number = 1,
+  requestedPlanId: string = 'basic'
 ): Promise<Submission | null> {
   const submissionsCollection = await getSubmissionsCollection();
   const usersCollection = await getUsersCollection();
   const now = formatISO(new Date());
   const startDate = new Date();
   const endDate = new Date(startDate);
-  endDate.setMonth(startDate.getMonth() + 1); // Default to 1 month duration
+  endDate.setMonth(startDate.getMonth() + durationMonths);
 
   // Get the reseller's name
   const reseller = await usersCollection.findOne({ id: resellerId });
@@ -462,8 +472,8 @@ export async function createSuccessfulSubmission(
     requestDate: now,
     startDate: formatISO(startDate),
     endDate: formatISO(endDate),
-    durationMonths: 1,
-    requestedPlanId: 'basic', // Default to basic plan
+    durationMonths,
+    requestedPlanId,
     createdAt: now,
     updatedAt: now,
   };
@@ -607,13 +617,13 @@ export async function deleteUserAccount(id: string): Promise<boolean> {
     console.log('Starting deleteUserAccount for ID:', id);
     
     // First find the submission to get the customer email and reseller ID
-    const submission = await submissionsCollection.findOne({ id });
+    const submission = await submissionsCollection.findOne({ _id: new ObjectId(id) });
     if (!submission) {
       console.error(`Submission with ID ${id} not found.`);
       return false;
     }
     console.log('Found submission:', { 
-      id: submission.id, 
+      id: submission._id, 
       customerEmail: submission.customerEmail,
       resellerId: submission.resellerId 
     });
@@ -623,11 +633,6 @@ export async function deleteUserAccount(id: string): Promise<boolean> {
       customerEmail: submission.customerEmail 
     });
     console.log(`Deleted ${submissionsResult.deletedCount} submissions for customer ${submission.customerEmail}`);
-
-    if (submissionsResult.deletedCount === 0) {
-      console.error('No submissions were deleted');
-      return false;
-    }
 
     // Try to find the user by email first
     const user = await usersCollection.findOne({ email: submission.customerEmail });
